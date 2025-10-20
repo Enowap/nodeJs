@@ -30,8 +30,29 @@ app.use((req, res, next) => {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = process.cwd();
-const projectPath = path.join(os.homedir(), "storage", "downloads", "node_projects");
+
+// 🔍 Deteksi apakah sedang di Termux (Android)
+let projectPath;
+const isMobile = fs.existsSync(path.join(os.homedir(), "storage", "downloads"));
+if (isMobile) {
+  projectPath = path.join(os.homedir(), "storage", "downloads", "node_projects");
+  console.log("📱 Mode: Termux/Android terdeteksi → Path:", projectPath);
+} else {
+  projectPath = path.join(os.homedir(), "node_projects");
+  console.log("💻 Mode: Desktop/Server terdeteksi → Path:", projectPath);
+}
+
 const PORT = process.env.PORT || 3000;
+
+// ======================================================
+// 🌐 Sajikan file statis dari ROOT (karena index.html di root)
+// ======================================================
+app.use(express.static(__dirname));
+
+// Rute utama untuk "/"
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
 // ======================================================
 // 🧹 AUTO CLEANER UNTUK FILE .d.ts
@@ -133,7 +154,6 @@ app.post("/api/download", async (req, res) => {
     const data = result?.data;
 
     if (!data?.media?.length) {
-      console.log("❌ Tidak ada media ditemukan.");
       return res.status(404).json({ success: false, error: "Tidak ada media ditemukan." });
     }
 
@@ -149,8 +169,6 @@ app.post("/api/download", async (req, res) => {
       return res.status(400).json({ success: false, error: "Media tidak valid atau URL tidak bisa diputar." });
     }
 
-    console.log(`✅ ${validMedia.length} media valid ditemukan untuk URL: ${url}`);
-
     res.json({
       success: true,
       data: {
@@ -164,7 +182,6 @@ app.post("/api/download", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("❌ ERROR SERVER:", err);
     res.status(500).json({ success: false, error: err.message });
   }
 });
@@ -183,28 +200,9 @@ app.get("/proxy/get.php", async (req, res) => {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
-
     const response = await fetch(targetUrl, { signal: controller.signal });
     clearTimeout(timeout);
-
     const data = await response.json();
-
-    if (data.status === "error" && /wrong type of the web page content/i.test(data.message || "")) {
-      try {
-        const relayResponse = await fetch(send);
-        const contentType = relayResponse.headers.get("content-type") || "video/mp4";
-        res.setHeader("Content-Type", contentType);
-        res.setHeader("Content-Disposition", 'inline; filename="video.mp4"');
-        relayResponse.body.pipe(res);
-        return;
-      } catch (relayErr) {
-        return res.status(500).json({
-          status: "error",
-          message: `Relay fallback failed: ${relayErr.message}`,
-        });
-      }
-    }
-
     res.json(data);
   } catch (error) {
     res.status(500).json({
@@ -215,22 +213,12 @@ app.get("/proxy/get.php", async (req, res) => {
 });
 
 // ======================================================
-// 🌐 Sajikan file statis dari folder PUBLIC
-// ======================================================
-app.use(express.static(path.join(__dirname, "public")));
-
-// Rute utama
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-// ======================================================
 // 🚀 Jalankan server
 // ======================================================
 app.listen(PORT, () => {
-  console.log(`✅ Server aktif di port ${PORT}`);
+  console.log(`✅ Server aktif di http://localhost:${PORT}`);
+  console.log(`📂 Folder kerja: ${projectPath}`);
 
-  // Hanya jalankan Termux command kalau environment-nya Android
   if (os.platform() === "android") {
     setTimeout(() => {
       exec("termux-open-url http://localhost:3000/", (err) => {
