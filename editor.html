@@ -1,0 +1,116 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
+    $path = $_POST['path'] ?? '';
+    $content = $_POST['content'] ?? '';
+
+    $real = realpath($path);
+    if (!$real || !file_exists($real)) {
+        echo json_encode(['success' => false, 'message' => '❌ File tidak ditemukan.']);
+        exit;
+    }
+
+    if (file_put_contents($real, $content) !== false) {
+        echo json_encode(['success' => true, 'message' => '✅ File berhasil disimpan.']);
+    } else {
+        echo json_encode(['success' => false, 'message' => '❌ Gagal menyimpan file.']);
+    }
+    exit;
+}
+
+$filePath = $_GET['path'] ?? '';
+$content = '';
+if ($filePath && file_exists($filePath)) {
+    $content = file_get_contents($filePath);
+}
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor File Lokal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body { background:#0f0f0f; color:#e0e0e0; }
+textarea { background:#111; color:#0f0; resize:none; }
+button { transition:all .2s; }
+button:hover { opacity:.9; }
+#notifBox { display:none; position:fixed; bottom:20px; right:20px; background:#22c55e; color:white; padding:10px 15px; border-radius:8px; font-family:sans-serif; }
+</style>
+</head>
+<body class="p-6">
+  <div class="max-w-5xl mx-auto bg-[#1a1a1a] rounded-xl shadow-lg overflow-hidden border border-gray-700">
+    <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-green-400">🧩 Editor File Lokal</h1>
+      <a href="javascript:history.back()" class="bg-gray-700 text-white px-3 py-1 rounded text-sm hover:bg-gray-600">⬅ Kembali</a>
+    </div>
+
+    <div class="p-4 space-y-3">
+      <div>
+        <label class="text-sm text-gray-400">Lokasi File:</label>
+        <input id="filePath" class="w-full bg-gray-900 text-green-300 rounded px-3 py-2 text-sm border border-gray-700" readonly value="<?= htmlspecialchars($filePath) ?>">
+      </div>
+
+      <textarea id="content" rows="30" class="w-full rounded px-3 py-2 font-mono text-sm border border-gray-700"><?= htmlspecialchars($content) ?></textarea>
+
+      <div class="flex gap-2 mt-2">
+        <button id="saveBtn" class="bg-blue-600 text-white px-4 py-2 rounded text-sm">💾 Simpan (Ctrl+S)</button>
+        <button id="reloadBtn" class="bg-yellow-600 text-white px-4 py-2 rounded text-sm">🔄 Muat Ulang</button>
+        <button id="copyBtn" class="bg-gray-700 text-white px-4 py-2 rounded text-sm">📋 Salin</button>
+        <button id="clearBtn" class="bg-red-600 text-white px-4 py-2 rounded text-sm">🧹 Bersihkan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="notifBox"></div>
+
+<script>
+const notif = (msg, color='#22c55e') => {
+  const box = document.getElementById('notifBox');
+  box.textContent = msg;
+  box.style.background = color;
+  box.style.display = 'block';
+  setTimeout(() => box.style.display = 'none', 2000);
+};
+
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  const path = document.getElementById('filePath').value;
+  const content = document.getElementById('content').value;
+
+  const res = await fetch(location.href, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `path=${encodeURIComponent(path)}&content=${encodeURIComponent(content)}`
+  });
+
+  const data = await res.json();
+  notif(data.message, data.success ? '#22c55e' : '#ef4444');
+});
+
+document.getElementById('reloadBtn').addEventListener('click', () => location.reload());
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const t = document.getElementById('content');
+  t.select();
+  document.execCommand('copy');
+  notif('Teks disalin ke clipboard.');
+});
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('content').value = '';
+  notif('Isi editor dibersihkan.', '#f59e0b');
+});
+
+// Shortcut keyboard
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 's') {
+    e.preventDefault();
+    document.getElementById('saveBtn').click();
+  }
+  if (e.ctrlKey && e.key === 'u') {
+    e.preventDefault();
+    document.getElementById('reloadBtn').click();
+  }
+});
+</script>
+</body>
+</html>
