@@ -214,16 +214,7 @@ app.get("/proxy/get.php", async (req, res) => {
   }
 });
 
-// ======================================================
-// 🌐 Sajikan file statis dari folder PUBLIC
-// ======================================================
-// Sajikan semua file dari root
-app.use(express.static(__dirname));
 
-// Rute utama untuk "/"
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
 
 // ======================================================
 // 🚀 Jalankan server
