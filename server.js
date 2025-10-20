@@ -27,11 +27,6 @@ app.use((req, res, next) => {
 // ======================================================
 // 📁 PATH & KONSTANTA
 // ======================================================
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = process.cwd();
-const projectPath = path.join(os.homedir(), "storage", "downloads", "node_projects");
-const PORT = process.env.PORT || 3000;
 
 // ======================================================
 // 🧹 AUTO CLEANER UNTUK FILE .d.ts
