@@ -221,7 +221,9 @@ app.get("/proxy/get.php", async (req, res) => {
 app.use(express.static(__dirname));
 
 // Rute utama untuk "/"
-
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
 // ======================================================
 // 🚀 Jalankan server
