@@ -26,29 +26,12 @@ app.use((req, res, next) => {
 
 // ======================================================
 // 📁 PATH & KONSTANTA
-
-// ======================================================
-// 📁 PATH & KONSTANTA
 // ======================================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = process.cwd();
-const PORT = 3000;
-
-// 🔍 Deteksi OS otomatis
-let projectPath;
-const isMobile = fs.existsSync(path.join(os.homedir(), "storage", "downloads"));
-if (isMobile) {
-  projectPath = path.join(os.homedir(), "storage", "downloads", "node_projects");
-  console.log("📱 Mode: Termux/Android terdeteksi → Path:", projectPath);
-} else {
-  projectPath = path.join(os.homedir(), "node_projects");
-  console.log("💻 Mode: Desktop/Server terdeteksi → Path:", projectPath);
-}
-
-
-
-// ======================================================
+const projectPath = path.join(os.homedir(), "storage", "downloads", "node_projects");
+const PORT = process.env.PORT || 3000;
 
 // ======================================================
 // 🧹 AUTO CLEANER UNTUK FILE .d.ts
@@ -231,7 +214,15 @@ app.get("/proxy/get.php", async (req, res) => {
   }
 });
 
+// ======================================================
+// 🌐 Sajikan file statis dari folder PUBLIC
+// ======================================================
+app.use(express.static(path.join(__dirname, "public")));
 
+// Rute utama
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // ======================================================
 // 🚀 Jalankan server
