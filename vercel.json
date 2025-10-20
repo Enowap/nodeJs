@@ -1,7 +1,7 @@
 {
   "framework": "express",
   "routes": [
-    { "src": "/(.*\.html)", "dest": "/$1" },
+    { "src": "/(.*\\.html)", "dest": "/$1" },
     { "src": "/(.*\\.css)", "dest": "/$1" },
     { "src": "/(.*\\.js)", "dest": "/$1" },
     { "src": "/(.*)", "dest": "/server.js" }
