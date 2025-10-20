@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,6 +13,7 @@
   "type": "module",
   "dependencies": {
     "express": "^5.1.0",
-    "snapsave-media-downloader": "^2.2.1"
+    "snapsave-media-downloader": "^2.2.1",
+    "mongodb": "^6.6.2"
   }
 }
