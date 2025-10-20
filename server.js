@@ -30,18 +30,7 @@ app.use((req, res, next) => {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = process.cwd();
-
-// 🔍 Deteksi apakah sedang di Termux (Android)
-let projectPath;
-const isMobile = fs.existsSync(path.join(os.homedir(), "storage", "downloads"));
-if (isMobile) {
-  projectPath = path.join(os.homedir(), "storage", "downloads", "node_projects");
-  console.log("📱 Mode: Termux/Android terdeteksi → Path:", projectPath);
-} else {
-  projectPath = path.join(os.homedir(), "node_projects");
-  console.log("💻 Mode: Desktop/Server terdeteksi → Path:", projectPath);
-}
-
+const projectPath = path.join(os.homedir(), "storage", "downloads", "node_projects");
 const PORT = process.env.PORT || 3000;
 
 // ======================================================
