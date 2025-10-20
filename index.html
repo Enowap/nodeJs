@@ -288,6 +288,94 @@
       background: linear-gradient(90deg, #2ea043, #34c759);
       transform: scale(1.03);
     }
+
+    /* --- CSS MODAL (TAMBAHAN) --- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #1e1e2f;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin: auto;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .modal-header h2 {
+      color: #00f2ff;
+      margin: 0;
+    }
+
+    .close-btn {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+      color: #fff;
+    }
+
+    #cmdInput {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 10px;
+      resize: vertical;
+    }
+
+    #output {
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 15px;
+      border-radius: 8px;
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .modal-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    /* Menyesuaikan tombol modal agar tidak 100% width */
+    .modal-buttons .btn {
+      width: auto;
+      flex-grow: 1;
+    }
   </style>
 </head>
 <body>
@@ -314,8 +402,25 @@
   <div id="result"></div>
 </div>
 
-<!-- Tempat di mana modal akan dimuat -->
-<div id="modalContainer"></div>
+<div id="modalContainer">
+  <div id="commandModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>⚙️ Terminal Perintah</h2>
+        <span id="closeModalBtn" class="close-btn">&times;</span>
+      </div>
+      <textarea id="cmdInput" rows="3" placeholder="Masukkan perintah... (misal: ls -l)"></textarea>
+      <pre id="output">Menunggu perintah...</pre>
+      <div class="modal-buttons">
+        <button id="runBtn" class="btn btn-command">🚀 Jalankan</button>
+        <button id="modalPasteBtn" class="btn btn-refresh">📋 Paste</button>
+        <button id="clearBtn" class="btn" style="background: #777;">🗑️ Bersihkan</button>
+        <button id="copyBtn" class="btn" style="background: #4CAF50;">📥 Salin Output</button>
+        <button id="editFileBtn" class="btn" style="background: #ff9800; display: none;">✏️ Edit File</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <script>
@@ -789,25 +894,13 @@ console.log(
 
 
 
-// Modal-related scripts
+// Modal-related scripts (PERBAIKAN)
+// Hapus logic 'fetch()' dan panggil 'initModalEvents()' secara langsung
 document.addEventListener("DOMContentLoaded", () => {
-  const modalContainer = document.getElementById('modalContainer');
-  if (modalContainer) {
-    fetch('modal-command.html')
-      .then(res => res.text())
-      .then(html => {
-        modalContainer.innerHTML = html;
-setTimeout(() => {
+  console.log("✅ DOM dimuat, menginisialisasi modal secara langsung...");
   initModalEvents();
-  console.log("✅ Modal dimuat dari file eksternal dan diinisialisasi");
-}, 50);
-      })
-      .catch(err => console.error("❌ Gagal memuat modal:", err));
-  } else {
-    console.log("✅ Modal sudah ada di DOM, inisialisasi langsung");
-    initModalEvents();
-  }
 });
+
 
 function initModalEvents() {
   const modal = document.getElementById("commandModal");
@@ -1014,7 +1107,12 @@ async function runCommand(cmdInput, output) {
           li.style.background = "#0f0";
           li.style.color = "#000";
           selectedFile = line; // simpan file aktif
-          document.getElementById("editFileBtn").style.display = "inline-block";
+          
+          // Tampilkan tombol edit jika elemennya ada
+          const editButton = document.getElementById("editFileBtn");
+          if(editButton) {
+            editButton.style.display = "inline-block";
+          }
         });
 
         ul.appendChild(li);
@@ -1035,6 +1133,13 @@ async function runCommand(cmdInput, output) {
 function clearCommand(cmdInput, output) {
   cmdInput.value = "";
   output.textContent = "Menunggu perintah...";
+  
+  // Sembunyikan tombol edit saat output dibersihkan
+  const editButton = document.getElementById("editFileBtn");
+  if(editButton) {
+    editButton.style.display = "none";
+  }
+  selectedFile = null;
 }
 
 function copyOutput(output) {
