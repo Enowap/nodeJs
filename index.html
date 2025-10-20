@@ -379,6 +379,63 @@
   </style>
 </head>
 <body>
+<style>
+  .support {
+    background: #111;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .support-container {
+    text-align: center;
+  }
+
+  .support-container h2 {
+    font-size: 20px;
+    color: #ff66b2; /* warna pink lembut */
+    margin-bottom: 15px;
+  }
+
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .social-icons a img {
+    width: 40px;
+    height: 40px;
+    filter: brightness(0) invert(1); /* jadikan ikon putih */
+    transition: 0.3s;
+  }
+
+  .social-icons a img:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 5px #ff66b2);
+  }
+</style>
+
+<div class="support-container">
+  <h2>Support:</h2>
+  <div class="social-icons">
+    <a href="https://twitter.com" target="_blank">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="Twitter">
+    </a>
+    <a href="https://instagram.com" target="_blank">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+    </a>
+    <a href="https://facebook.com" target="_blank">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
+    </a>
+  </div>
+</div>
+
 <div class="container">
   <div class="top-buttons">
     <button id="refreshButton" class="btn btn-refresh" onclick="location.reload()">🔄 Refresh Halaman</button>
