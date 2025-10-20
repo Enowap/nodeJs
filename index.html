@@ -17,16 +17,17 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1e1e2f, #2a4066);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column; /* agar support section di atas container */
-      padding: 20px;
-    }
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1e1e2f, #2a4066);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column; /* ✅ tambahan penting */
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
 
     /* ===================== CONTAINER ===================== */
     .container {
@@ -221,95 +222,116 @@
     }
 
     /* ===================== SUPPORT SECTION ===================== */
-    .support-container {
-      text-align: center;
-      margin-bottom: 20px;
-    }
 
-    .support-container h2 {
-      font-size: 20px;
-      color: #ff66b2;
-      margin-bottom: 15px;
-    }
 
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
+.support-container {
+  text-align: center;
+  margin-bottom: 45px; /* beri jarak agar tidak menempel ke bawah */
+  animation: fadeIn 0.8s ease; /* efek muncul halus */
+}
 
-    .social-icons a img {
-      width: 40px;
-      height: 40px;
-      filter: brightness(0) invert(1);
-      transition: 0.3s;
-    }
+.support-container h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ff66b2; /* pink lembut */
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(255, 102, 178, 0.4);
+}
 
-    .social-icons a img:hover {
-      transform: scale(1.2);
-      filter: drop-shadow(0 0 5px #ff66b2);
-    }
-  </style>
+.social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px; /* jarak antar logo */
+}
+
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  padding: 10px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  background: rgba(255, 102, 178, 0.15);
+  transform: translateY(-3px);
+}
+
+.social-icons a img {
+  width: 36px;
+  height: 36px;
+  filter: brightness(0) invert(1);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.social-icons a:hover img {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 6px #ff66b2);
+}
+
+/* Efek animasi muncul */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsif di layar kecil */
+@media (max-width: 480px) {
+  .social-icons {
+    gap: 18px;
+  }
+  .social-icons a img {
+    width: 32px;
+    height: 32px;
+  }
+}
+</style>
 </head>
 <body>
 
-  <!-- SUPPORT SECTION -->
-  <div class="support-container">
-    <h2>Support:</h2>
-    <div class="social-icons">
-      <a href="https://twitter.com" target="_blank">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="Twitter">
-      </a>
-      <a href="https://instagram.com" target="_blank">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
-      </a>
-      <a href="https://facebook.com" target="_blank">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
-      </a>
-    </div>
+<div class="support-container">
+  <h2>Support:</h2>
+  <div class="social-icons">
+    <a href="https://twitter.com" target="_blank">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="Twitter">
+    </a>
+    <a href="https://instagram.com" target="_blank">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+    </a>
+    <a href="https://facebook.com" target="_blank">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
+    </a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="top-buttons">
+    <button id="refreshButton" class="btn btn-refresh" onclick="location.reload()">🔄 Refresh Halaman</button>
+    <button id="openModalBtn" class="btn btn-command">⚙️ Jalankan Command</button>
   </div>
 
-  <!-- MAIN DOWNLOADER CONTAINER -->
-  <div class="container">
-    <div class="top-buttons">
-      <button id="refreshButton" class="btn btn-refresh" onclick="location.reload()">🔄 Refresh Halaman</button>
-      <button id="openModalBtn" class="btn btn-command">⚙️ Jalankan Command</button>
+  <h1>📥 MediaGM Downloader</h1>
+
+  <form id="downloadForm">
+    <div class="url-input-wrapper">
+      <input type="url" id="urlInput" placeholder="Masukkan URL Facebook / Instagram / TikTok" required>
+      <button type="button" id="pasteBtn" class="paste-icon">📋</button>
     </div>
+    <button type="submit" class="btn btn-download">⬇️ Mulai Download</button>
+  </form>
 
-    <h1>📥 MediaGM Downloader</h1>
-
-    <form id="downloadForm">
-      <div class="url-input-wrapper">
-        <input type="url" id="urlInput" placeholder="Masukkan URL Facebook / Instagram / TikTok" required>
-        <button type="button" id="pasteBtn" class="paste-icon">📋</button>
-      </div>
-      <button type="submit" class="btn btn-download">⬇️ Mulai Download</button>
-    </form>
-
-    <div id="progressContainer"><div id="progressBar"></div></div>
-    <div id="progressText"></div>
-    <div id="result"></div>
+  <div id="progressContainer">
+    <div id="progressBar"></div>
   </div>
+  <div id="progressText"></div>
+  <div id="result"></div>
+</div>
 
-  <!-- MODAL -->
-  <div id="commandModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>⚙️ Terminal Perintah</h2>
-        <span id="closeModalBtn" class="close-btn">&times;</span>
-      </div>
-      <textarea id="cmdInput" rows="3" placeholder="Masukkan perintah... (misal: ls -l)"></textarea>
-      <pre id="output">Menunggu perintah...</pre>
-      <div class="modal-buttons">
-        <button id="runBtn" class="btn btn-command">🚀 Jalankan</button>
-        <button id="modalPasteBtn" class="btn btn-refresh">📋 Paste</button>
-        <button id="clearBtn" class="btn" style="background:#777;">🗑️ Bersihkan</button>
-        <button id="copyBtn" class="btn" style="background:#4CAF50;">📥 Salin Output</button>
-        <button id="editFileBtn" class="btn" style="background:#ff9800; display:none;">✏️ Edit File</button>
-      </div>
-    </div>
-  </div>
-
+<div id="modalContainer"></div>
 
 <script>
 // Fungsi untuk menampilkan pesan mengambang
