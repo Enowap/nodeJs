@@ -793,7 +793,7 @@ console.log(
 document.addEventListener("DOMContentLoaded", () => {
   const modalContainer = document.getElementById('modalContainer');
   if (modalContainer) {
-    fetch('modal-command.html')
+    fetch('/modal-command.html')
       .then(res => res.text())
       .then(html => {
         modalContainer.innerHTML = html;
