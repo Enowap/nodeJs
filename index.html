@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://www.tiktok.com">
   <link rel="preconnect" href="https://www.facebook.com">
   <link rel="preconnect" href="https://www.instagram.com">
+  
   <style>
     * {
       margin: 0;
@@ -23,9 +24,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column; /* agar support section di atas container */
       padding: 20px;
     }
 
+    /* ===================== CONTAINER ===================== */
     .container {
       max-width: 450px;
       width: 100%;
@@ -36,6 +39,7 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 20px;
     }
 
     h1 {
@@ -46,6 +50,7 @@
       text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
     }
 
+    /* ===================== INPUT + BUTTON ===================== */
     .url-input-wrapper {
       position: relative;
       width: 100%;
@@ -106,29 +111,14 @@
 
     .btn-download {
       background: linear-gradient(90deg, #00b4ff, #00f2ff);
+      color: #fff;
     }
 
     .btn-download:hover {
       background: linear-gradient(90deg, #0096d6, #00d9ff);
     }
 
-    .copy-btn {
-      background: linear-gradient(90deg, #4CAF50, #66BB6A);
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      margin: 10px 5px;
-      font-weight: 600;
-      transition: background 0.3s ease, transform 0.3s ease;
-    }
-
-    .copy-btn:hover {
-      background: linear-gradient(90deg, #45a049, #5cb85c);
-      transform: translateY(-2px);
-    }
-
+    /* ===================== PROGRESS ===================== */
     #progressContainer {
       width: 100%;
       background: rgba(255, 255, 255, 0.1);
@@ -156,140 +146,7 @@
       margin-top: 20px;
     }
 
-    .download-btn {
-      display: inline-block;
-      background: linear-gradient(90deg, #ff4081, #ff6f61);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 600;
-      margin: 10px 5px;
-      transition: background 0.3s ease, transform 0.3s ease;
-    }
-
-    .download-btn:hover {
-      background: linear-gradient(90deg, #e03575, #f05a4f);
-      transform: translateY(-2px);
-    }
-
-    p.error {
-      color: #ff6f61;
-      font-weight: 500;
-      background: rgba(255, 107, 97, 0.2);
-      padding: 10px;
-      border-radius: 8px;
-    }
-
-    .video-wrapper {
-      position: relative;
-      margin-top: 20px;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #000;
-    }
-
-    video,
-    img.thumbnail {
-      width: 100%;
-      max-height: 400px;
-      object-fit: cover;
-      border-radius: 12px;
-    }
-
-    .play-icon {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 60px;
-      height: 60px;
-      background: rgba(255, 64, 129, 0.8);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.3s ease;
-    }
-
-    .play-icon:hover {
-      background: rgba(255, 64, 129, 1);
-      transform: translate(-50%, -50%) scale(1.1);
-    }
-
-    .play-icon::before {
-      content: '▶';
-      font-size: 30px;
-      color: #fff;
-    }
-
-    #loadingText {
-      color: #ccc;
-      font-size: 0.9rem;
-      margin-bottom: 10px;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 20px;
-      }
-
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      .btn,
-      input {
-        padding: 12px;
-        font-size: 0.9rem;
-      }
-    }
-
-    .top-buttons {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .btn-refresh,
-    .btn-command {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      height: 42px;
-      padding: 0 18px;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-    }
-
-    .btn-refresh {
-      background: linear-gradient(90deg, #ff4081, #ff6f61);
-      color: white;
-    }
-
-    .btn-refresh:hover {
-      background: linear-gradient(90deg, #e03575, #f05a4f);
-      transform: scale(1.03);
-    }
-
-    .btn-command {
-      background: linear-gradient(90deg, #238636, #2ea043);
-      color: white;
-    }
-
-    .btn-command:hover {
-      background: linear-gradient(90deg, #2ea043, #34c759);
-      transform: scale(1.03);
-    }
-
-    /* --- CSS MODAL (TAMBAHAN) --- */
+    /* ===================== MODAL ===================== */
     .modal {
       display: none;
       position: fixed;
@@ -335,8 +192,7 @@
       cursor: pointer;
     }
 
-    .close-btn:hover,
-    .close-btn:focus {
+    .close-btn:hover {
       color: #fff;
     }
 
@@ -347,7 +203,6 @@
       background: rgba(255, 255, 255, 0.1);
       color: #fff;
       border: none;
-      font-family: 'Poppins', sans-serif;
       margin-bottom: 10px;
       resize: vertical;
     }
@@ -365,101 +220,78 @@
       word-wrap: break-word;
     }
 
-    .modal-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    /* ===================== SUPPORT SECTION ===================== */
+    .support-container {
+      text-align: center;
+      margin-bottom: 20px;
     }
-    
-    /* Menyesuaikan tombol modal agar tidak 100% width */
-    .modal-buttons .btn {
-      width: auto;
-      flex-grow: 1;
+
+    .support-container h2 {
+      font-size: 20px;
+      color: #ff66b2;
+      margin-bottom: 15px;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .social-icons a img {
+      width: 40px;
+      height: 40px;
+      filter: brightness(0) invert(1);
+      transition: 0.3s;
+    }
+
+    .social-icons a img:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 5px #ff66b2);
     }
   </style>
 </head>
 <body>
-<style>
-  .support {
-    background: #111;
-    color: white;
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    margin: 0;
-  }
 
-  .support-container {
-    text-align: center;
-  }
-
-  .support-container h2 {
-    font-size: 20px;
-    color: #ff66b2; /* warna pink lembut */
-    margin-bottom: 15px;
-  }
-
-  .social-icons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  .social-icons a img {
-    width: 40px;
-    height: 40px;
-    filter: brightness(0) invert(1); /* jadikan ikon putih */
-    transition: 0.3s;
-  }
-
-  .social-icons a img:hover {
-    transform: scale(1.2);
-    filter: drop-shadow(0 0 5px #ff66b2);
-  }
-</style>
-
-<div class="support-container">
-  <h2>Support:</h2>
-  <div class="social-icons">
-    <a href="https://twitter.com" target="_blank">
-      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="Twitter">
-    </a>
-    <a href="https://instagram.com" target="_blank">
-      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
-    </a>
-    <a href="https://facebook.com" target="_blank">
-      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
-    </a>
-  </div>
-</div>
-
-<div class="container">
-  <div class="top-buttons">
-    <button id="refreshButton" class="btn btn-refresh" onclick="location.reload()">🔄 Refresh Halaman</button>
-    <button id="openModalBtn" class="btn btn-command">⚙️ Jalankan Command</button>
-  </div>
-
-  <h1>📥 MediaGM Downloader</h1>
-
-  <form id="downloadForm">
-    <div class="url-input-wrapper">
-      <input type="url" id="urlInput" placeholder="Masukkan URL Facebook / Instagram / TikTok" required>
-      <button type="button" id="pasteBtn" class="paste-icon">📋</button>
+  <!-- SUPPORT SECTION -->
+  <div class="support-container">
+    <h2>Support:</h2>
+    <div class="social-icons">
+      <a href="https://twitter.com" target="_blank">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" alt="Twitter">
+      </a>
+      <a href="https://instagram.com" target="_blank">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram">
+      </a>
+      <a href="https://facebook.com" target="_blank">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
+      </a>
     </div>
-    <button type="submit" class="btn btn-download">⬇️ Mulai Download</button>
-  </form>
-
-  <div id="progressContainer">
-    <div id="progressBar"></div>
   </div>
-  <div id="progressText"></div>
-  <div id="result"></div>
-</div>
 
-<div id="modalContainer">
+  <!-- MAIN DOWNLOADER CONTAINER -->
+  <div class="container">
+    <div class="top-buttons">
+      <button id="refreshButton" class="btn btn-refresh" onclick="location.reload()">🔄 Refresh Halaman</button>
+      <button id="openModalBtn" class="btn btn-command">⚙️ Jalankan Command</button>
+    </div>
+
+    <h1>📥 MediaGM Downloader</h1>
+
+    <form id="downloadForm">
+      <div class="url-input-wrapper">
+        <input type="url" id="urlInput" placeholder="Masukkan URL Facebook / Instagram / TikTok" required>
+        <button type="button" id="pasteBtn" class="paste-icon">📋</button>
+      </div>
+      <button type="submit" class="btn btn-download">⬇️ Mulai Download</button>
+    </form>
+
+    <div id="progressContainer"><div id="progressBar"></div></div>
+    <div id="progressText"></div>
+    <div id="result"></div>
+  </div>
+
+  <!-- MODAL -->
   <div id="commandModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -471,13 +303,12 @@
       <div class="modal-buttons">
         <button id="runBtn" class="btn btn-command">🚀 Jalankan</button>
         <button id="modalPasteBtn" class="btn btn-refresh">📋 Paste</button>
-        <button id="clearBtn" class="btn" style="background: #777;">🗑️ Bersihkan</button>
-        <button id="copyBtn" class="btn" style="background: #4CAF50;">📥 Salin Output</button>
-        <button id="editFileBtn" class="btn" style="background: #ff9800; display: none;">✏️ Edit File</button>
+        <button id="clearBtn" class="btn" style="background:#777;">🗑️ Bersihkan</button>
+        <button id="copyBtn" class="btn" style="background:#4CAF50;">📥 Salin Output</button>
+        <button id="editFileBtn" class="btn" style="background:#ff9800; display:none;">✏️ Edit File</button>
       </div>
     </div>
   </div>
-</div>
 
 
 <script>
