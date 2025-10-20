@@ -26,6 +26,14 @@ app.use((req, res, next) => {
 
 // ======================================================
 // 📁 PATH & KONSTANTA
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = process.cwd();
+
+
+
+
 // ======================================================
 
 // ======================================================
