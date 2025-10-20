@@ -6,12 +6,8 @@ import path from "path";
 import express from "express";
 import { fileURLToPath } from "url";
 import { snapsave } from "snapsave-media-downloader";
-import { spawn } from "child_process";
+import { spawn, exec } from "child_process";
 import os from "os";
-import { exec } from "child_process";
-
-
-
 
 // ======================================================
 // ⚙️ SETUP DASAR
@@ -19,7 +15,7 @@ import { exec } from "child_process";
 const app = express();
 app.use(express.json());
 
-// Tambahkan header CORS untuk semua endpoint
+// Header CORS global
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -31,11 +27,11 @@ app.use((req, res, next) => {
 // ======================================================
 // 📁 PATH & KONSTANTA
 // ======================================================
-const projectPath = path.join(os.homedir(), "storage", "downloads", "node_projects");
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = process.cwd();
-const PORT = 3000;
+const projectPath = path.join(os.homedir(), "storage", "downloads", "node_projects");
+const PORT = process.env.PORT || 3000;
 
 // ======================================================
 // 🧹 AUTO CLEANER UNTUK FILE .d.ts
@@ -64,25 +60,12 @@ const nodeModulesPath = path.join(projectRoot, "node_modules");
 if (fs.existsSync(nodeModulesPath)) {
   console.log("🧹 Menghapus semua file .d.ts di node_modules...");
   deleteAllDTS(nodeModulesPath);
-
-  fs.watch(nodeModulesPath, { recursive: true }, (event, filename) => {
-    if (filename?.endsWith(".d.ts")) {
-      const fullPath = path.join(nodeModulesPath, filename);
-      if (fs.existsSync(fullPath)) deleteDTS(fullPath);
-    }
-  });
-
-  console.log("👀 Watcher aktif di node_modules (khusus file .d.ts).");
-} else {
-  console.log("ℹ️ Folder node_modules belum ada, lewati pembersihan awal.");
 }
 
 // ======================================================
-// 🧰 API UNTUK JALANKAN COMMAND TERMUX
+// 🧰 API UNTUK JALANKAN COMMAND TERMUX (opsional)
 // ======================================================
-const logFile = path.join(projectPath, "command.log");
-
-// Fungsi logging ke file
+const logFile = path.join(projectRoot, "command.log");
 function logToFile(message) {
   try {
     fs.appendFileSync(logFile, `[${new Date().toISOString()}] ${message}\n`);
@@ -99,14 +82,13 @@ app.post("/api/command", (req, res) => {
   }
 
   const allowed = ["npm", "cd", "ls", "pwd", "bash", "node"];
-  if (!allowed.some(prefix => cmd.trim().startsWith(prefix))) {
+  if (!allowed.some((prefix) => cmd.trim().startsWith(prefix))) {
     return res.status(403).json({ success: false, error: "Perintah tidak diizinkan." });
   }
 
   console.log(`🟡 Menjalankan perintah: ${cmd} di folder ${projectPath}`);
   logToFile(`🟡 Menjalankan perintah: ${cmd}`);
 
-  // Pisahkan command dan argumen agar spawn bisa bekerja
   const parts = cmd.split(" ");
   const mainCmd = parts.shift();
 
@@ -116,19 +98,14 @@ app.post("/api/command", (req, res) => {
   let errorOutput = "";
 
   child.stdout.on("data", (data) => {
-    const text = data.toString();
-    output += text;
-    console.log("📤", text.trim());
+    output += data.toString();
   });
 
   child.stderr.on("data", (data) => {
-    const text = data.toString();
-    errorOutput += text;
-    console.error("⚠️", text.trim());
+    errorOutput += data.toString();
   });
 
   child.on("close", (code) => {
-    console.log(`✅ Proses selesai (code: ${code})`);
     logToFile(`✅ Selesai (${cmd}) -> code: ${code}`);
     res.json({
       success: code === 0,
@@ -138,7 +115,6 @@ app.post("/api/command", (req, res) => {
   });
 
   child.on("error", (err) => {
-    console.error("❌ Gagal menjalankan proses:", err.message);
     logToFile(`❌ Gagal menjalankan: ${cmd} -> ${err.message}`);
     res.status(500).json({ success: false, error: err.message });
   });
@@ -150,8 +126,7 @@ app.post("/api/command", (req, res) => {
 app.post("/api/download", async (req, res) => {
   try {
     const { url } = req.body;
-    if (!url)
-      return res.status(400).json({ success: false, error: "URL tidak boleh kosong" });
+    if (!url) return res.status(400).json({ success: false, error: "URL tidak boleh kosong" });
 
     console.log("📥 Permintaan download diterima untuk URL:", url);
     const result = await snapsave(url);
@@ -162,7 +137,6 @@ app.post("/api/download", async (req, res) => {
       return res.status(404).json({ success: false, error: "Tidak ada media ditemukan." });
     }
 
-    // 🔹 Validasi hanya media dengan URL yang benar-benar valid
     const validMedia = data.media.filter(
       (m) =>
         m.url &&
@@ -172,14 +146,10 @@ app.post("/api/download", async (req, res) => {
     );
 
     if (validMedia.length === 0) {
-      console.log("⚠️ Semua media tidak valid untuk URL:", url);
       return res.status(400).json({ success: false, error: "Media tidak valid atau URL tidak bisa diputar." });
     }
 
     console.log(`✅ ${validMedia.length} media valid ditemukan untuk URL: ${url}`);
-    validMedia.forEach((m, i) => {
-      console.log(`   [${i + 1}] ${m.type} - ${m.resolution || "Unknown"} → ${m.url}`);
-    });
 
     res.json({
       success: true,
@@ -198,20 +168,17 @@ app.post("/api/download", async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
 // ======================================================
 // 🌐 PROXY UNTUK GET.PHP
 // ======================================================
-
-
 app.get("/proxy/get.php", async (req, res) => {
   const { send, source } = req.query;
-
   if (!send) {
     return res.status(400).json({ status: "error", message: "Missing 'send' parameter." });
   }
 
-  // URL utama tujuan PHP
-  const targetUrl = `https://shtl.pw/getmylink/get.php?send=${send}&source=${source || ''}`;
+  const targetUrl = `https://shtl.pw/getmylink/get.php?send=${send}&source=${source || ""}`;
 
   try {
     const controller = new AbortController();
@@ -220,29 +187,17 @@ app.get("/proxy/get.php", async (req, res) => {
     const response = await fetch(targetUrl, { signal: controller.signal });
     clearTimeout(timeout);
 
-    // Coba parse respons JSON dari server utama
     const data = await response.json();
 
-    // Jika gagal dikirim ke Telegram karena tipe web page content
-    if (
-      data.status === "error" &&
-      /wrong type of the web page content/i.test(data.message || "")
-    ) {
-      console.warn("⚠️ Detected non-direct video content, attempting fallback relay...");
-
+    if (data.status === "error" && /wrong type of the web page content/i.test(data.message || "")) {
       try {
         const relayResponse = await fetch(send);
-
-        const contentType =
-          relayResponse.headers.get("content-type") || "video/mp4";
-
-        // Pastikan konten video dikirim ulang sebagai stream
+        const contentType = relayResponse.headers.get("content-type") || "video/mp4";
         res.setHeader("Content-Type", contentType);
         res.setHeader("Content-Disposition", 'inline; filename="video.mp4"');
         relayResponse.body.pipe(res);
         return;
       } catch (relayErr) {
-        console.error("❌ Fallback relay failed:", relayErr.message);
         return res.status(500).json({
           status: "error",
           message: `Relay fallback failed: ${relayErr.message}`,
@@ -250,10 +205,8 @@ app.get("/proxy/get.php", async (req, res) => {
       }
     }
 
-    // Kalau respons normal, kirim kembali ke frontend
     res.json(data);
   } catch (error) {
-    console.error("❌ Error in /proxy/get.php:", error.message);
     res.status(500).json({
       status: "error",
       message: `Failed to connect to get.php: ${error.message}`,
@@ -262,25 +215,28 @@ app.get("/proxy/get.php", async (req, res) => {
 });
 
 // ======================================================
-// 🌐 Sajikan file statis dari folder yang sama
+// 🌐 Sajikan file statis dari folder PUBLIC
 // ======================================================
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, "public")));
+
+// Rute utama
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // ======================================================
-// 🚀 Jalankan server tunggal
+// 🚀 Jalankan server
 // ======================================================
 app.listen(PORT, () => {
-  console.log(`✅ Server aktif di http://localhost:${PORT}`);
-  console.log(`📂 Folder kerja: ${projectPath}`);
+  console.log(`✅ Server aktif di port ${PORT}`);
 
-  // 🔹 Tunggu 3 detik lalu buka Chrome via Termux
-  setTimeout(() => {
-    exec("termux-open-url http://localhost:3000/", (err) => {
-      if (err) {
-        console.error("⚠️ Gagal membuka browser otomatis:", err.message);
-      } else {
-        console.log("🌐 Browser dibuka otomatis di http://localhost:3000/");
-      }
-    });
-  }, 3000);
+  // Hanya jalankan Termux command kalau environment-nya Android
+  if (os.platform() === "android") {
+    setTimeout(() => {
+      exec("termux-open-url http://localhost:3000/", (err) => {
+        if (err) console.error("⚠️ Gagal membuka browser otomatis:", err.message);
+        else console.log("🌐 Browser dibuka otomatis di http://localhost:3000/");
+      });
+    }, 3000);
+  }
 });
