@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -461,25 +459,35 @@
 </div>
 
 
-<div id="modalContainer">
-  <div id="commandModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>⚙️ Terminal Perintah</h2>
-        <span id="closeModalBtn" class="close-btn">&times;</span>
-      </div>
-      <textarea id="cmdInput" rows="3" placeholder="Masukkan perintah... (misal: ls -l)"></textarea>
-      <pre id="output">Menunggu perintah...</pre>
-      <div class="modal-buttons">
-        <button id="runBtn" class="btn btn-command">🚀 Jalankan</button>
-        <button id="modalPasteBtn" class="btn btn-refresh">📋 Paste</button>
-        <button id="clearBtn" class="btn" style="background: #777;">🗑️ Bersihkan</button>
-        <button id="copyBtn" class="btn" style="background: #4CAF50;">📥 Salin Output</button>
-        <button id="editFileBtn" class="btn" style="background: #ff9800; display: none;">✏️ Edit File</button>
-      </div>
+
+<!-- 🔹 Modal Command Termux -->
+<div id="commandModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" id="closeModalBtn">&times;</span>
+    <h2>⚙️ Eksekusi Command Termux</h2>
+
+    <input id="cmdInput" placeholder="Masukkan perintah (contoh: npm install)" style="width:100%;padding:8px;margin-top:10px;">
+
+    <!-- Tombol sejajar -->
+    <div style="display:flex; gap:8px; margin-top:10px;">
+      <button id="runBtn">Jalankan</button>
+      <button id="modalPasteBtn">Paste</button>
+      <button id="clearBtn">Clear</button>
+    </div>
+
+    <!-- Hasil perintah -->
+    <pre id="output" style="background:#111;color:#0f0;padding:10px;margin-top:15px;border-radius:5px;max-height:200px;overflow:auto;">
+Menunggu perintah...
+    </pre>
+
+    <!-- Tombol copy & edit output -->
+    <div style="text-align:center; margin-top:10px;">
+      <button id="copyBtn">📋 Copy Output</button>
+      <button id="editFileBtn" style="display:none; margin-left:10px;">✏️ Edit File</button>
     </div>
   </div>
 </div>
+
 
 <script>
 // Fungsi untuk menampilkan pesan mengambang
