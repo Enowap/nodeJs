@@ -1,14 +1,15 @@
+
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📥 MediaDL Downloader</title>
+  <title>📥 Media Downloader</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://www.tiktok.com">
   <link rel="preconnect" href="https://www.facebook.com">
   <link rel="preconnect" href="https://www.instagram.com">
-  
   <style>
     * {
       margin: 0;
@@ -28,8 +29,6 @@
   padding: 20px;
 }
 
-
-    /* ===================== CONTAINER ===================== */
     .container {
       max-width: 450px;
       width: 100%;
@@ -40,7 +39,6 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: 20px;
     }
 
     h1 {
@@ -51,7 +49,6 @@
       text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
     }
 
-    /* ===================== INPUT + BUTTON ===================== */
     .url-input-wrapper {
       position: relative;
       width: 100%;
@@ -112,14 +109,29 @@
 
     .btn-download {
       background: linear-gradient(90deg, #00b4ff, #00f2ff);
-      color: #fff;
     }
 
     .btn-download:hover {
       background: linear-gradient(90deg, #0096d6, #00d9ff);
     }
 
-    /* ===================== PROGRESS ===================== */
+    .copy-btn {
+      background: linear-gradient(90deg, #4CAF50, #66BB6A);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 10px 5px;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .copy-btn:hover {
+      background: linear-gradient(90deg, #45a049, #5cb85c);
+      transform: translateY(-2px);
+    }
+
     #progressContainer {
       width: 100%;
       background: rgba(255, 255, 255, 0.1);
@@ -147,81 +159,139 @@
       margin-top: 20px;
     }
 
-    /* ===================== MODAL ===================== */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
+    .download-btn {
+      display: inline-block;
+      background: linear-gradient(90deg, #ff4081, #ff6f61);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 10px 5px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .download-btn:hover {
+      background: linear-gradient(90deg, #e03575, #f05a4f);
+      transform: translateY(-2px);
+    }
+
+    p.error {
+      color: #ff6f61;
+      font-weight: 500;
+      background: rgba(255, 107, 97, 0.2);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .video-wrapper {
+      position: relative;
+      margin-top: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    video,
+    img.thumbnail {
       width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.7);
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .play-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 64, 129, 0.8);
+      border-radius: 50%;
+      display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
     }
 
-    .modal-content {
-      background: #1e1e2f;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      margin: auto;
-      padding: 25px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 600px;
+    .play-icon:hover {
+      background: rgba(255, 64, 129, 1);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .play-icon::before {
+      content: '▶';
+      font-size: 30px;
       color: #fff;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
-    .modal-header {
+    #loadingText {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .btn,
+      input {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+    }
+
+    .top-buttons {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
+      gap: 10px;
       margin-bottom: 15px;
     }
 
-    .modal-header h2 {
-      color: #00f2ff;
-      margin: 0;
-    }
-
-    .close-btn {
-      color: #aaa;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .close-btn:hover {
-      color: #fff;
-    }
-
-    #cmdInput {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
+    .btn-refresh,
+    .btn-command {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 42px;
+      padding: 0 18px;
       border: none;
-      margin-bottom: 10px;
-      resize: vertical;
-    }
-
-    #output {
-      background: #000;
-      color: #0f0;
-      font-family: monospace;
-      padding: 15px;
       border-radius: 8px;
-      height: 200px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
     }
 
-    /* ===================== SUPPORT SECTION ===================== */
+    .btn-refresh {
+      background: linear-gradient(90deg, #ff4081, #ff6f61);
+      color: white;
+    }
+
+    .btn-refresh:hover {
+      background: linear-gradient(90deg, #e03575, #f05a4f);
+      transform: scale(1.03);
+    }
+
+    .btn-command {
+      background: linear-gradient(90deg, #238636, #2ea043);
+      color: white;
+    }
+
+    .btn-command:hover {
+      background: linear-gradient(90deg, #2ea043, #34c759);
+      transform: scale(1.03);
+    }
+
 
 
 .support-container {
@@ -314,7 +384,7 @@
     <button id="openModalBtn" class="btn btn-command">⚙️ Jalankan Command</button>
   </div>
 
-  <h1>📥 MediaDL Downloader</h1>
+  <h1>📥 MediaGM Downloader</h1>
 
   <form id="downloadForm">
     <div class="url-input-wrapper">
