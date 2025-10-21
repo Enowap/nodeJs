@@ -401,7 +401,26 @@
   <div id="result"></div>
 </div>
 
-<div id="modalContainer"></div>
+
+<div id="modalContainer">
+  <div id="commandModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>⚙️ Terminal Perintah</h2>
+        <span id="closeModalBtn" class="close-btn">&times;</span>
+      </div>
+      <textarea id="cmdInput" rows="3" placeholder="Masukkan perintah... (misal: ls -l)"></textarea>
+      <pre id="output">Menunggu perintah...</pre>
+      <div class="modal-buttons">
+        <button id="runBtn" class="btn btn-command">🚀 Jalankan</button>
+        <button id="modalPasteBtn" class="btn btn-refresh">📋 Paste</button>
+        <button id="clearBtn" class="btn" style="background: #777;">🗑️ Bersihkan</button>
+        <button id="copyBtn" class="btn" style="background: #4CAF50;">📥 Salin Output</button>
+        <button id="editFileBtn" class="btn" style="background: #ff9800; display: none;">✏️ Edit File</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 // Fungsi untuk menampilkan pesan mengambang
