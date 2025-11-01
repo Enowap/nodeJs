@@ -654,13 +654,11 @@ document.getElementById('pasteBtn').addEventListener('click', async () => {
 
 // 🔍 Fungsi untuk mengekstrak dan membersihkan URL valid
 function extractValidUrl(text) {
-  const match = text.match(
-    /(https?:\/\/(?:www\.|vm\.)?(facebook\.com|instagram\.com|tiktok\.com|vm\.tiktok\.com|twitter\.com|x\.com)\/[^\s]+)/i
-  );
+  const regex = /(https?:\/\/(?:www\.|vm\.|vt\.)?(facebook\.com|instagram\.com|tiktok\.com|vm\.tiktok\.com|vt\.tiktok\.com|twitter\.com|x\.com)\/[^\s"'<>]+)/i;
+  const match = text.match(regex);
 
-  if (match && match[1]) {
-    // Hapus karakter tanda baca di akhir (titik, koma, tanda seru, dsb)
-    return match[1].replace(/[.,!?]+$/, '').trim();
+  if (match && match[0]) {
+    return match[0].replace(/[.,!?]+$/, '').trim();
   }
 
   return null;
@@ -691,16 +689,21 @@ if (!urlPattern.test(url)) {
 
     // === Deteksi otomatis di dalam pesan (auto-extract) ===
     const match = text.match(
-      /(https?:\/\/(?:www\.|vm\.)?(facebook\.com|instagram\.com|tiktok\.com|vm\.tiktok\.com|twitter\.com|x\.com|threads\.net|threads\.com)\/[^\s"'<>]+)/i
+      /(https?:\/\/(?:www\.|vm\.|vt\.)?(facebook\.com|instagram\.com|tiktok\.com|vm\.tiktok\.com|vt\.tiktok\.com|twitter\.com|x\.com|threads\.net|threads\.com)\/[^\s"'<>]+)/i
     );
 
-    if (match && match[1]) {
-      // Bersihkan karakter tambahan di akhir
-      return match[1].replace(/[.,!?]+$/, '').trim();
+    if (match && match[0]) {
+      // Bersihkan karakter tambahan di akhir seperti titik, koma, tanda seru, dsb
+      return match[0].replace(/[.,!?]+$/, '').trim();
     }
 
     return null;
   };
+
+  // Jalankan fungsi ekstraksi
+  const extractedUrl = extractValidUrl(url);
+  if (extractedUrl) url = extractedUrl;
+}
 
   // Jalankan fungsi deteksi URL
   const validUrl = extractValidUrl(url);
