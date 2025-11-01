@@ -700,10 +700,7 @@ if (!urlPattern.test(url)) {
     return null;
   };
 
-  // Jalankan fungsi ekstraksi
-  const extractedUrl = extractValidUrl(url);
-  if (extractedUrl) url = extractedUrl;
-}
+  
 
   // Jalankan fungsi deteksi URL
   const validUrl = extractValidUrl(url);
