@@ -416,10 +416,15 @@
   color: #c9d1d9;
 }
 
+    /* Tambahkan di <style> */
+.hidden {
+  display: none !important;
+}
 </style>
 </head>
 <body>
 
+  
 <div class="support-container">
   <h2>Support:</h2>
   <div class="social-icons">
@@ -981,23 +986,22 @@ function initModalEvents() {
   const editBtn = document.getElementById("editFileBtn"); // Tambahan baru
 
 
-// ✅ Cek apakah tombol ditemukan
-  if (!openModalBtn) {
-    console.warn("⚠️ Tombol openModalBtn tidak ditemukan di DOM!");
-    return;
+// === LOGIKA BARU: sembunyikan tombol modal jika BUKAN localhost ===
+const isLocal =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1" ||
+  window.location.hostname === "::1";
+
+console.log("Hostname:", window.location.hostname);
+console.log("isLocal:", isLocal);
+console.log("openModalBtn display:", openModalBtn.style.display, "→ classes:", openModalBtn.classList);
+  
+if (openModalBtn) {
+  if (isLocal) {
+    openModalBtn.classList.remove("hidden");
+  } else {
+    openModalBtn.classList.add("hidden");
   }
-
-  // ✅ Logika deteksi lokal
-  const hostname = window.location.hostname;
-  const isLocal =
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname.endsWith(".local");
-
-  console.log("🌍 Hostname:", hostname, "| Lokal?", isLocal);
-
-  // ✅ Terapkan visibilitas tombol
-  openModalBtn.style.display = isLocal ? "block" : "none";
 }
 
   
