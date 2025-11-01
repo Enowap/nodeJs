@@ -981,20 +981,24 @@ function initModalEvents() {
   const editBtn = document.getElementById("editFileBtn"); // Tambahan baru
 
 
-// === LOGIKA BARU: sembunyikan tombol modal jika di localhost ===
-  const isLocal =
-    window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1";
-
-  if (openModalBtn) {
-    if (isLocal) {
-      // Tampilkan tombol saat di lokal
-      openModalBtn.style.display = "block";
-    } else {
-      // Sembunyikan tombol jika bukan di lokal
-      openModalBtn.style.display = "none";
-    }
+// ✅ Cek apakah tombol ditemukan
+  if (!openModalBtn) {
+    console.warn("⚠️ Tombol openModalBtn tidak ditemukan di DOM!");
+    return;
   }
+
+  // ✅ Logika deteksi lokal
+  const hostname = window.location.hostname;
+  const isLocal =
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname.endsWith(".local");
+
+  console.log("🌍 Hostname:", hostname, "| Lokal?", isLocal);
+
+  // ✅ Terapkan visibilitas tombol
+  openModalBtn.style.display = isLocal ? "block" : "none";
+}
 
   
   // Cek semua elemen penting
