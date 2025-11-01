@@ -980,6 +980,23 @@ function initModalEvents() {
   const copyBtn = document.getElementById("copyBtn");
   const editBtn = document.getElementById("editFileBtn"); // Tambahan baru
 
+
+// === LOGIKA BARU: sembunyikan tombol modal jika di localhost ===
+  const isLocal =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+
+  if (openModalBtn) {
+    if (isLocal) {
+      // Sembunyikan tombol saat di lokal
+      openModalBtn.style.display = "none";
+    } else {
+      // Tampilkan tombol jika bukan di lokal
+      openModalBtn.style.display = "block";
+    }
+  }
+
+  
   // Cek semua elemen penting
   if (!modal || !openModalBtn || !cmdInput || !output || !runBtn || !modalPasteBtn || !clearBtn || !copyBtn) {
     console.error("❌ Elemen modal atau tombol tidak ditemukan:", {
